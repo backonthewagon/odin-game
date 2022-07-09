@@ -7,31 +7,44 @@ function promptComputer(returnInt = false) {
   let roll = Math.floor(Math.random()*3);
 
   // return raw integer instead
-  if(returnInt === true)
-    return roll;
+  if(returnInt === true) return roll;
   
     // return string "rock", "paper" or "scissors"
-  if(roll === 0)
-    return `rock`;
-  else if(roll === 1)
-    return `paper`;
-  else
-    return `scissors`;
+  if(roll === 0) return `rock`;
+  else if(roll === 1) return `paper`;
+  else return `scissors`;
 }
 
-// Play a round of rock, paper, scissors
+// prompts user for selection
+// handles input sanitizing; loops prompt until receiving valid input
+// returns string "rock", "paper" or "scissors"
+function promptPlayer() {
+  let playerInput;
+  
+  statusElem.innerText = `Make your choice!`;
+
+  rockButton.onclick = chooseAction();
+  paperButton.onclick = chooseAction();
+  scissorsButton.onclick = chooseAction();
+
+  return playerInput;
+  /*while(true) {
+    playerInputRaw = prompt(`Type "rock", "paper" or "scissors":`);
+    playerInput = playerInputRaw.toLowerCase();
+
+    // input can only be "rock" "paper" or "scissors"
+    // exit loop and return input if valid
+    if(playerInput === "rock" || 
+    playerInput === "paper" || 
+    playerInput === "scissors") return playerInput;
+  }*/
+}
+
+
+
+// Play a single round of rock, paper, scissors
 // return "error", "tie", "win" or "lose"
 function playRound(playerSel, compSel) {
-  // prep selections
-  //if(!playerSel) playerSel = promptPlayer();
-  //if(!compSel) compSel = computerPlay();
-
-  // error condition if player didn't pick rock/paper/scissors
-  if(playerSel !== "rock" && playerSel !== "paper" && playerSel !== "scissors") {
-    // log error string `Error: Input "${playerSelInput}", expecting "rock", "paper" or "scissors".`
-     return `error`;
-  }
-
   // tie condition
   if(playerSel === compSel) return `tie`;
   
@@ -49,159 +62,141 @@ function playRound(playerSel, compSel) {
     return `lose`;
   }
 
-  // execution shouldn't get here, but just in case
-  // log error string `Error: Unexpected result!`
+  // shouldnt get here as long as inputs are expected values
+  // log error string `Error: Unexpected round result!`
   return `error`;
 }
 
-// prompts user for selection
-// handles input sanitizing; repeats prompt until receiving valid input
-// returns string "rock", "paper" or "scissors"
-function promptPlayer() {
-  let validInput = false;
-  let playerInputRaw, playerInput;
-  let i = 0;
 
-  // simplify by just returning out of the loop?
-  while(validInput === false) {
-    console.log(`Prompt #${i++}  `);
-    playerInputRaw = prompt(`Type "rock", "paper" or "scissors":`);
-    playerInput = playerInputRaw.toLowerCase();
 
-    if(playerInput === "rock" || 
-    playerInput === "paper" || 
-    playerInput === "scissors") {
-      validInput = true;
-    }
+const chooseAction = function() {
+  let playerSel = this.id;
+  let compSel = promptComputer();
+  let roundLog = ``;
+  let gameStatusMsg = ``;
+
+  //console.log(`Round #${rounds+1} - P1: ${playerSel} vs CPU: ${compSel}`);
+
+  roundLog += `Round #${roundsTotal+1} - You selected <strong>${playerSel}</strong>. Computer selected <strong>${compSel}</strong>. `;
+
+  let result = playRound(playerSel, compSel);
+  roundsTotal++;
+  document.getElementById(`roundstotal`).innerText = `${roundsTotal}`;
+
+  if(result === `win`) {
+    roundsWon++;
+    document.getElementById(`roundswon`).innerText = `${roundsWon}`;
+    roundLog += `<strong>You won!</strong><br />`;
+  } else if(result === `lose`) {
+    roundsLost++;
+    document.getElementById(`roundslost`).innerText = `${roundsLost}`;
+    roundLog += `<strong>You lost...</strong><br />`;
+  } else if(result === `tie`) {
+    roundsTied++;
+    document.getElementById(`roundstied`).innerText = `${roundsTied}`;
+    roundLog += `<strong>It's a tie!</strong><br />`;
+  } else {
+    roundLog += `Something went wrong...<br />`;
+  }
+  
+
+  //gameStatusMsg += `<strong>Won:</strong> ${playerWins}<br /><strong>Lost:</strong> ${compWins}<br /><strong>Tied:</strong> ${ties}<br /><strong>TOTAL:</strong> ${rounds}<br /><br />`;
+
+  if(roundsWon === roundsLost) {
+    gameStatusMsg = `You are tied!`;
+  } else if(roundsWon > roundsLost) {
+    gameStatusMsg = `You're winning!!`;
+  } else {
+    gameStatusMsg = `You're losing...`;
   }
 
-  return playerInput;
+  document.getElementById(`roundlog`).innerHTML += roundLog;
+  document.getElementById(`gamestatus`).innerHTML = gameStatusMsg;
 }
 
-// Run game for a number of rounds (default 5) and return a winner
-function game(rounds = 5) {
-  let playerWins = 0, compWins = 0, ties = 0, errors = 0;
+let roundsTotal = 0, roundsWon = 0, roundsLost = 0, roundsTied = 0;
+
+
+document.getElementById(`rock`).onclick = chooseAction;
+document.getElementById(`paper`).onclick = chooseAction;
+document.getElementById(`scissors`).onclick = chooseAction;
+
+
+// Run game for a number of rounds (default 3) and return a winner
+/*function game(totalRounds = 3, statusElem, roundElem, gameElem) {
+  let playerWins = 0, compWins = 0, validRounds = 0, ties = 0, errors = 0;
   let roundResult, gameResult;
 
-  for(let i = 0; i < rounds; i++) {
+  // iterate through each round and count wins, losses, ties, errors
+  // validRounds counts all non-error rounds
+  // TODO?: maybe change error behavior to instead repeat
+  //  the round iteration until getting a valid round?
+  //  i.e. in case `error` or default, subtract 1 from i
+  for(let i = 0; i < totalRounds; i++) {
     // get computer and player choices
     roundResult = playRound(promptPlayer(), promptComputer());
 
+    // increase appropriate counter(s) based on round result
     switch(roundResult) {
-      case "tie":
+      case `tie`:
         ties++;
+        validRounds++;
         break;
-      case "win":
+      case `win`:
         playerWins++;
+        validRounds++;
         break;
-      case "lose":
+      case `lose`:
         compWins++;
+        validRounds++;
         break;
-      case "error":
+      case `error`:
+        // repeat round iteration
         errors++;
         break;
       default:
+        // repeat round iteration
         errors++;
     }
 
     console.log(roundResult);
   }
 
-  console.log(`Wins: ${playerWins} Losses: ${compWins} Ties: ${ties} Errors: ${errors}`);
-
-  if(playerWins === compWins) gameResult = `tie`;
-  else if(playerWins > compWins) gameResult = `win`;
-  else gameResult = `lose`;
-}
-
-game();
-
-// OLD VERSION
-// Play a round of rock, paper, scissors and return a string with the result text
-// if returnSimple = true instead returns "error", "tie", "win" or "lose"
-/*function playRound(playerSelInput, compSel, returnSimple = false) {
-  // prep selections
-  let playerSel = playerSelInput.toLowerCase();
-  if(!compSel) compSel = computerPlay();
-
-  // error condition if player didn't pick rock/paper/scissors
-  if(playerSel !== "rock" && playerSel !== "paper" && playerSel !== "scissors") {
-     return (returnSimple ? `error` : `Error: Input "${playerSelInput}", expecting "rock", "paper" or "scissors".`);
-  }
-
-  // tie condition
-  if(playerSel === compSel)
-    return (returnSimple ? `tie` : `A tie! You and the computer both picked ${playerSel}!`);
-  
-  // player win conditions
-  if((playerSel === "rock" && compSel === "scissors") || 
-    (playerSel === "paper" && compSel === "rock") || 
-    (playerSel === "scissors" && compSel === "paper")) {
-    return (returnSimple ? `win` : `Congratulations! You picked ${playerSel} which beat computer's ${compSel}!`);
-  }
-
-  // player lose conditions
-  if((playerSel === "rock" && compSel === "paper") || 
-    (playerSel === "paper" && compSel === "scissors") || 
-    (playerSel === "scissors" && compSel === "rock")) {
-    return (returnSimple ? `lose` : `You lost! Computer picked ${compSel} which beat your ${playerSel}!`);
-  }
-
-  // execution shouldn't get here, but just in case
-  return (returnSimple ? `error` : `Error: Unexpected result!`);
-}*/
-
-
-
-
-/*function playRound(playerSelStr, compSel) {
-  let playerSelLower = playerSelString.toLowerCase();
-  let playerSel;
-
-  if(playerSelLower === "rock") {
-    playerSel = 0;
-  } else if(playerSelLower === "paper") {
-    playerSel = 1;
-  } else if(playerSelLower === "scissors") {
-    playerSel = 2;
+  if(playerWins === compWins) {
+    gameResult = `tie`;
+    console.log(`A stalemate! Rounds won: ${playerWins} - Rounds lost: ${compWins} - Ties: ${ties} - Total rounds: ${validRounds}`);
+  } else if(playerWins > compWins) {
+    gameResult = `win`;
+    console.log(`Congrats - you win! Rounds won: ${playerWins} - Rounds lost: ${compWins} - Ties: ${ties} - Total rounds: ${validRounds}`);
   } else {
-    // Error condition - invalid player input
-    return "Error";
+    gameResult = `lose`;
+    console.log(`Oh no! You lose. Rounds won: ${playerWins} - Rounds lost: ${compWins} - Ties: ${ties} - Total rounds: ${validRounds}`);
   }
 
-  // Rock (0) beats Scissors (2) 0 >>> 2
-  // Paper (1) beats Rock (0) 1 >>> 0
-  // Scissors (2) beats Paper (1) - 2 >>> 1
-  if((playerSel === 0 && compSel === 2) || (playerSel === 1 &&& compSel === 0) || (playerSel === 2 && compSel === 1)) {
-    // Player wins
-    return "You won!";
-  }
+  return gameResult;
 }*/
 
+// testing function to calculate probabilities
+// for promptComputer() rolls
+// prints string of calculated probabilities
+// over totalRolls iterations
 function testRolls(totalRolls) {
   let rollResult;
-  let r0 = 0;
-  let r1 = 0;
-  let r2 = 0;
-  let rErr = 0;
+  let prob0, prob1, prob2;
+  let r0 = 0, r1 = 0, r2 = 0, rErr = 0;
 
   for(let i = 0; i < totalRolls; i++) {
-    rollResult = promptComputer(true);
+    rollResult = promptComputer();
 
-    if(rollResult === 0) {
-      r0++;
-    } else if(rollResult === 1) {
-      r1++;
-    } else if(rollResult === 2) {
-      r2++;
-    } else {
-      rErr++;
-    }
+    if(rollResult === `rock`) r0++;
+    else if(rollResult === `paper`) r1++;
+    else if(rollResult === `scissors`) r2++;
+    else rErr++;
   }
 
-  let prob0 = Math.round(r0 * 100 / totalRolls);
-  let prob1 = Math.round(r1 * 100 / totalRolls);
-  let prob2 = Math.round(r2 * 100 / totalRolls);
+  prob0 = Math.round(r0 * 100 / totalRolls);
+  prob1 = Math.round(r1 * 100 / totalRolls);
+  prob2 = Math.round(r2 * 100 / totalRolls);
 
   return `Rock: ${prob0}% - Paper: ${prob1}% - Scissors: ${prob2}% --- Errs: ${rErr}`;
 }

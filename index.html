@@ -1,9 +1,28 @@
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8" />
   <title>Rock, Paper, Scissors!</title>
 </head>
 <body>
+  <h1>Rock, Paper, Scissors</h1>
+  <div id="status">Ready to play? Make your choice!</div>
+
+  <div id="buttons">
+    <button type="button" class="choice" id="rock">Rock</button>
+    <button type="button" class="choice" id="paper">Paper</button>
+    <button type="button" class="choice" id="scissors">Scissors</button>
+  </div>
+
+  <div id="gamelog">
+    <p class="statusmsg"><span id="gamestatus">Choose to start playing!</span></p>
+    <p class="stat"><span class="label">Won: </span><span id="roundswon">0</span></p>
+    <p class="stat"><span class="label">Lost: </span><span id="roundslost">0</span></p>
+    <p class="stat"><span class="label">Tied: </span><span id="roundstied">0</span></p>
+    <p class="stat"><span class="label">Total: </span><span id="roundstotal">0</span></p>
+  </div>
+  <div id="roundlog"></div>
+
   <script src="scripts/main.js"></script>
 </body>
 </html>
