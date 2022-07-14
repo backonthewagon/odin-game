@@ -3,26 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <title>Rock, Paper, Scissors!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
-  <h1>Rock, Paper, Scissors</h1>
-  <div id="status">Ready to play? Make your choice!</div>
+  <div id="header">
+    <h1>Rock, Paper, Scissors</h1>
+    <h3>Can you beat the computer? Make your choice!</h3>
+  </div>
+  <div id="gamezone">
+    <div id="status"></div>
 
-  <div id="buttons">
-    <button type="button" class="choice" id="rock">Rock</button>
-    <button type="button" class="choice" id="paper">Paper</button>
-    <button type="button" class="choice" id="scissors">Scissors</button>
+    <div id="buttons">
+      <button type="button" class="choice" id="rock" name="Rock">
+        <span>ROCK</span>
+      </button>
+      <button type="button" class="choice" id="paper" name="Paper">
+        <span>PAPER</span>
+      </button>
+      <button type="button" class="choice" id="scissors" name="Scissors">
+        <span>SCISSORS</span>
+      </button>
+    </div>
+    <div id="logcontainer">
+      <div id="gamelog">
+        <p class="statusmsg">
+          <span id="gamestatus"></span>
+        </p>
+        <p class="stat">
+          <span class="label">Won: </span>
+          <span id="roundswon">0</span>
+        </p>
+        <p class="stat">
+          <span class="label">Lost: </span>
+          <span id="roundslost">0</span>
+        </p>
+        <p class="stat">
+          <span class="label">Tied: </span>
+          <span id="roundstied">0</span>
+        </p>
+        <p class="stat">
+          <span class="label">Total: </span>
+          <span id="roundstotal">0</span>
+        </p>
+      </div>
+      <div id="roundlog"></div>
+    </div>
   </div>
 
-  <div id="gamelog">
-    <p class="statusmsg"><span id="gamestatus">Choose to start playing!</span></p>
-    <p class="stat"><span class="label">Won: </span><span id="roundswon">0</span></p>
-    <p class="stat"><span class="label">Lost: </span><span id="roundslost">0</span></p>
-    <p class="stat"><span class="label">Tied: </span><span id="roundstied">0</span></p>
-    <p class="stat"><span class="label">Total: </span><span id="roundstotal">0</span></p>
+  <div id="footer">
+    <a href="https://www.flaticon.com/free-icons/peace" title="peace icons">Peace icons created by Freepik - Flaticon</a>
   </div>
-  <div id="roundlog"></div>
-
   <script src="scripts/main.js"></script>
 </body>
 </html>
