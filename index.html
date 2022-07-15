@@ -5,7 +5,7 @@
   <title>Rock, Paper, Scissors!</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
@@ -29,21 +29,35 @@
     </div>
     <div id="logcontainer">
       <div id="gamelog">
-        <p class="statusmsg">
-          <span id="gamestatus"></span>
-        </p>
         <div id="scorebox">
           <div id="scorebox-header">
-            <div class="sb-left">Wins</div>
-            <div class="sb-right">Losses</div>
+            <div class="sb-left">WON</div>
+            <div class="sb-right">LOST</div>
           </div>
           <div id="scorebox-body">
-            <div id="won">0</div>
+            <div id="roundswon">0</div>
             <div id="divider"></div>
-            <div id="lost">0</div>
+            <div id="roundslost">0</div>
           </div>
         </div>
-        <p class="stat">
+        <div id="managegame">
+          <div id="gamestatus"></div>
+          <div id="gamecontrols">
+            <button id="reset">Reset Game</button>
+            <div id="optionpanel">
+              <h4>Rounds</h4>
+              <div id="optionbody">
+                <button class="roundsctrl" id="decreaserounds">-</button>
+                <div id="optionrounds">5</div>
+                <button class="roundsctrl" id="increaserounds">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--<p class="statusmsg">
+          <span id="gamestatus"></span>
+        </p>-->
+        <!--<p class="stat">
           <span class="label">Won: </span>
           <span id="roundswon">0</span>
         </p>
@@ -58,7 +72,7 @@
         <p class="stat">
           <span class="label">Total: </span>
           <span id="roundstotal">0</span>
-        </p>
+        </p>-->
       </div>
       <div id="roundlog"></div>
     </div>

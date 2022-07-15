@@ -67,7 +67,22 @@ function playRound(playerSel, compSel) {
   return `error`;
 }
 
-
+// check to see if game end conditions have been met
+// if yes, set gamePlayState to false
+// returns string `win` for player win
+// string `lose` for computer win
+// or false for no game end condition met 
+function checkVictory() {
+  if(roundsWon >= roundsToWin) {
+    gamePlayState = false;
+    return `win`;
+  } else if(roundsLost >= roundsToWin) {
+    gamePlayState = false;
+    return `lose`;
+  } else {
+    return false;
+  }
+}
 
 const chooseAction = function() {
   let playerSel = this.id;
@@ -77,49 +92,115 @@ const chooseAction = function() {
 
   //console.log(`Round #${rounds+1} - P1: ${playerSel} vs CPU: ${compSel}`);
 
-  roundLog += `Round #${roundsTotal+1} - You selected <strong>${playerSel}</strong>. Computer selected <strong>${compSel}</strong>. `;
+  // if game has not ended, process the round
+  if(gamePlayState === true) {
+    roundLog += `<strong>Round #${roundsTotal+1}</strong> - You selected <strong>${playerSel}</strong>. Computer selected <strong>${compSel}</strong>. `;
 
-  let result = playRound(playerSel, compSel);
-  roundsTotal++;
-  document.getElementById(`roundstotal`).innerText = `${roundsTotal}`;
+    let result = playRound(playerSel, compSel);
+    roundsTotal++;
+    //document.getElementById(`roundstotal`).innerText = `${roundsTotal}`;
 
-  if(result === `win`) {
-    roundsWon++;
-    document.getElementById(`roundswon`).innerText = `${roundsWon}`;
-    roundLog += `<strong>You won!</strong><br />`;
-  } else if(result === `lose`) {
-    roundsLost++;
-    document.getElementById(`roundslost`).innerText = `${roundsLost}`;
-    roundLog += `<strong>You lost...</strong><br />`;
-  } else if(result === `tie`) {
-    roundsTied++;
-    document.getElementById(`roundstied`).innerText = `${roundsTied}`;
-    roundLog += `<strong>It's a tie!</strong><br />`;
+    if(result === `win`) {
+      roundsWon++;
+      document.getElementById(`roundswon`).innerText = `${roundsWon}`;
+      roundLog += `<strong>You won!</strong><br />`;
+    } else if(result === `lose`) {
+      roundsLost++;
+      document.getElementById(`roundslost`).innerText = `${roundsLost}`;
+      roundLog += `<strong>You lost...</strong><br />`;
+    } else if(result === `tie`) {
+      roundsTied++;
+      //document.getElementById(`roundstied`).innerText = `${roundsTied}`;
+      roundLog += `<strong>It's a tie!</strong><br />`;
+    } else {
+      roundLog += `Something went wrong...<br />`;
+    }
+
+    // after incrementing round tallies, check to see
+    // if game end conditions have been met
+    // if yes, the function sets gamePlayState = false
+    // and returns string `win` or `lose`
+    // if not, the function returns false
+    let gameEndCheck = checkVictory();
+
+    if(gameEndCheck === `win`) {
+      gameStatusMsg = `GAME OVER - You won!`;
+      roundLog += `<strong>Game Over - You won the game!</strong>`;
+    } else if(gameEndCheck === `lose`) {
+      gameStatusMsg = `GAME OVER - You lost.`;
+      roundLog += `<strong>Game Over - You lost...</strong>`;
+    } else {
+      // checkVictory returned false, so proceed
+      // with the game normally
+      if(roundsWon === roundsLost) {
+        gameStatusMsg = `You are tied!`;
+      } else if(roundsWon > roundsLost) {
+        gameStatusMsg = `You're winning!!`;
+      } else {
+        gameStatusMsg = `You're losing...`;
+      }
+    }
   } else {
-    roundLog += `Something went wrong...<br />`;
-  }
-  
-
-  //gameStatusMsg += `<strong>Won:</strong> ${playerWins}<br /><strong>Lost:</strong> ${compWins}<br /><strong>Tied:</strong> ${ties}<br /><strong>TOTAL:</strong> ${rounds}<br /><br />`;
-
-  if(roundsWon === roundsLost) {
-    gameStatusMsg = `You are tied!`;
-  } else if(roundsWon > roundsLost) {
-    gameStatusMsg = `You're winning!!`;
-  } else {
-    gameStatusMsg = `You're losing...`;
+    // if game has already ended, player must reset
+    // to start a new game
+    gameStatusMsg = `Press RESET to start new game!`;
   }
 
   document.getElementById(`roundlog`).innerHTML += roundLog;
   document.getElementById(`gamestatus`).innerHTML = gameStatusMsg;
 }
 
-let roundsTotal = 0, roundsWon = 0, roundsLost = 0, roundsTied = 0;
+// reset game state with current player selection
+// for how many rounds to win
+function resetGame() {
+  // set gamePlayState = true
+  // reset all game state variables to zero
+  // set roundsToWin to user selection
+  // then update DOM elements:
+  // roundswon text = 0
+  // roundslost text = 0
+  // gamestatus = empty
+  // roundlog = empty
+  gamePlayState = true;
+  roundsTotal = 0;
+  roundsWon = 0;
+  roundsLost = 0;
+  roundsTied = 0;
+  roundsToWin = selectedRoundsToWin;
+
+  document.getElementById(`roundlog`).innerHTML = ``;
+  document.getElementById(`gamestatus`).innerHTML = `New game! First to ${roundsToWin} wins!`;
+  document.getElementById(`roundswon`).innerHTML = `0`;
+  document.getElementById(`roundslost`).innerHTML = `0`;
+}
+
+function incrementRoundsToWin() {
+  selectedRoundsToWin++;
+  document.getElementById(`optionrounds`).innerHTML = `${selectedRoundsToWin}`;
+}
+
+function decrementRoundsToWin() {
+  selectedRoundsToWin--;
+  document.getElementById(`optionrounds`).innerHTML = `${selectedRoundsToWin}`;
+}
+
+let roundsToWin = 5;
+let gamePlayState = true;
+let roundsTotal = 0;
+let roundsWon = 0;
+let roundsLost = 0;
+let roundsTied = 0;
+let selectedRoundsToWin = roundsToWin;
 
 
 document.getElementById(`rock`).onclick = chooseAction;
 document.getElementById(`paper`).onclick = chooseAction;
 document.getElementById(`scissors`).onclick = chooseAction;
+
+document.getElementById(`reset`).onclick = resetGame;
+
+document.getElementById(`increaserounds`).onclick = incrementRoundsToWin;
+document.getElementById(`decreaserounds`).onclick = decrementRoundsToWin;
 
 
 // Run game for a number of rounds (default 3) and return a winner
