@@ -15,33 +15,6 @@ function promptComputer(returnInt = false) {
   else return `scissors`;
 }
 
-// prompts user for selection
-// handles input sanitizing; loops prompt until receiving valid input
-// returns string "rock", "paper" or "scissors"
-function promptPlayer() {
-  let playerInput;
-  
-  statusElem.innerText = `Make your choice!`;
-
-  rockButton.onclick = chooseAction();
-  paperButton.onclick = chooseAction();
-  scissorsButton.onclick = chooseAction();
-
-  return playerInput;
-  /*while(true) {
-    playerInputRaw = prompt(`Type "rock", "paper" or "scissors":`);
-    playerInput = playerInputRaw.toLowerCase();
-
-    // input can only be "rock" "paper" or "scissors"
-    // exit loop and return input if valid
-    if(playerInput === "rock" || 
-    playerInput === "paper" || 
-    playerInput === "scissors") return playerInput;
-  }*/
-}
-
-
-
 // Play a single round of rock, paper, scissors
 // return "error", "tie", "win" or "lose"
 function playRound(playerSel, compSel) {
@@ -94,24 +67,23 @@ const chooseAction = function() {
 
   // if game has not ended, process the round
   if(gamePlayState === true) {
-    roundLog += `<strong>Round #${roundsTotal+1}</strong> - You selected <strong>${playerSel}</strong>. Computer selected <strong>${compSel}</strong>. `;
+    //roundLog += `<strong>Round #${roundsTotal+1}</strong> - You selected <strong>${playerSel}</strong>. Computer selected <strong>${compSel}</strong>. `;
+    roundLog += `<strong>Round #${roundsTotal+1}</strong> - You played <strong>${playerSel}</strong>, `;
 
     let result = playRound(playerSel, compSel);
     roundsTotal++;
-    //document.getElementById(`roundstotal`).innerText = `${roundsTotal}`;
 
     if(result === `win`) {
       roundsWon++;
-      document.getElementById(`roundswon`).innerText = `${roundsWon}`;
-      roundLog += `<strong>You won!</strong><br />`;
+      divRoundsWon.innerText = `${roundsWon}`;
+      roundLog += `which beat computer's <strong>${compSel}</strong>!<br />`;
     } else if(result === `lose`) {
       roundsLost++;
-      document.getElementById(`roundslost`).innerText = `${roundsLost}`;
-      roundLog += `<strong>You lost...</strong><br />`;
+      divRoundsLost.innerText = `${roundsLost}`;
+      roundLog += `which was beaten by computer's <strong>${compSel}</strong>.<br />`;
     } else if(result === `tie`) {
       roundsTied++;
-      //document.getElementById(`roundstied`).innerText = `${roundsTied}`;
-      roundLog += `<strong>It's a tie!</strong><br />`;
+      roundLog += `resulting in a tie with computer!<br />`;
     } else {
       roundLog += `Something went wrong...<br />`;
     }
@@ -125,10 +97,10 @@ const chooseAction = function() {
 
     if(gameEndCheck === `win`) {
       gameStatusMsg = `GAME OVER - You won!`;
-      roundLog += `<strong>Game Over - You won the game!</strong>`;
+      roundLog += `<strong>Congratulations - You won the game!</strong> Reset to play again!`;
     } else if(gameEndCheck === `lose`) {
       gameStatusMsg = `GAME OVER - You lost.`;
-      roundLog += `<strong>Game Over - You lost...</strong>`;
+      roundLog += `<strong>Game Over - You lost...</strong> Reset to play again!`;
     } else {
       // checkVictory returned false, so proceed
       // with the game normally
@@ -146,8 +118,8 @@ const chooseAction = function() {
     gameStatusMsg = `Press RESET to start new game!`;
   }
 
-  document.getElementById(`roundlog`).innerHTML += roundLog;
-  document.getElementById(`gamestatus`).innerHTML = gameStatusMsg;
+  divRoundLog.innerHTML += roundLog;
+  divGameStatus.innerHTML = gameStatusMsg;
 }
 
 // reset game state with current player selection
@@ -155,52 +127,72 @@ const chooseAction = function() {
 function resetGame() {
   // set gamePlayState = true
   // reset all game state variables to zero
-  // set roundsToWin to user selection
+  // set roundsToWin to current user selection
   // then update DOM elements:
   // roundswon text = 0
   // roundslost text = 0
   // gamestatus = empty
   // roundlog = empty
   gamePlayState = true;
-  roundsTotal = 0;
-  roundsWon = 0;
-  roundsLost = 0;
-  roundsTied = 0;
+  roundsTotal = 0, roundsWon = 0, roundsLost = 0, roundsTied = 0;
   roundsToWin = selectedRoundsToWin;
 
-  document.getElementById(`roundlog`).innerHTML = ``;
-  document.getElementById(`gamestatus`).innerHTML = `New game! First to ${roundsToWin} wins!`;
-  document.getElementById(`roundswon`).innerHTML = `0`;
-  document.getElementById(`roundslost`).innerHTML = `0`;
+  divRoundLog.innerHTML = ``;
+  divGameStatus.innerHTML = `New game! First to take ${roundsToWin} rounds, wins!`;
+  divRoundsWon.innerHTML = `0`;
+  divRoundsLost.innerHTML = `0`;
 }
 
 function incrementRoundsToWin() {
-  selectedRoundsToWin++;
-  document.getElementById(`optionrounds`).innerHTML = `${selectedRoundsToWin}`;
+  if(selectedRoundsToWin < maxRoundsToWin) {
+    selectedRoundsToWin++;
+    divRoundsToWin.innerHTML = `${selectedRoundsToWin}`;
+  } else {
+    selectedRoundsToWin = maxRoundsToWin;
+    divRoundsToWin.innerHTML = `${selectedRoundsToWin}`;
+    divGameStatus.innerHTML = `Maximum of ${maxRoundsToWin} rounds!`;
+  }
 }
 
 function decrementRoundsToWin() {
-  selectedRoundsToWin--;
-  document.getElementById(`optionrounds`).innerHTML = `${selectedRoundsToWin}`;
+  if(selectedRoundsToWin > minRoundsToWin) {
+    selectedRoundsToWin--;
+    divRoundsToWin.innerHTML = `${selectedRoundsToWin}`;
+  } else {
+    selectedRoundsToWin = minRoundsToWin;
+    divRoundsToWin.innerHTML = `${selectedRoundsToWin}`;
+    divGameStatus.innerHTML = `Minimum of ${minRoundsToWin} round!`;
+  }
 }
 
 let roundsToWin = 5;
 let gamePlayState = true;
-let roundsTotal = 0;
-let roundsWon = 0;
-let roundsLost = 0;
-let roundsTied = 0;
+let roundsTotal = 0, roundsWon = 0, roundsLost = 0, roundsTied = 0;
 let selectedRoundsToWin = roundsToWin;
+const minRoundsToWin = 1;
+const maxRoundsToWin = 20;
 
+const divRoundLog = document.getElementById(`roundlog`);
+const divGameStatus = document.getElementById(`gamestatus`);
+const divRoundsToWin = document.getElementById(`roundstowin`);
+const divRoundsWon = document.getElementById(`roundswon`);
+const divRoundsLost = document.getElementById(`roundslost`);
 
-document.getElementById(`rock`).onclick = chooseAction;
-document.getElementById(`paper`).onclick = chooseAction;
-document.getElementById(`scissors`).onclick = chooseAction;
+const buttonRock = document.getElementById(`rock`);
+const buttonPaper = document.getElementById(`paper`);
+const buttonScissors = document.getElementById(`scissors`);
+const buttonReset = document.getElementById(`reset`);
+const buttonIncrementRounds = document.getElementById(`incrementrounds`);
+const buttonDecrementRounds = document.getElementById(`decrementrounds`);
 
-document.getElementById(`reset`).onclick = resetGame;
+buttonRock.onclick = chooseAction;
+buttonPaper.onclick = chooseAction;
+buttonScissors.onclick = chooseAction;
 
-document.getElementById(`increaserounds`).onclick = incrementRoundsToWin;
-document.getElementById(`decreaserounds`).onclick = decrementRoundsToWin;
+buttonReset.onclick = resetGame;
+
+buttonIncrementRounds.onclick = incrementRoundsToWin;
+buttonDecrementRounds.onclick = decrementRoundsToWin;
 
 
 // Run game for a number of rounds (default 3) and return a winner

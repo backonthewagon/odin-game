@@ -87,7 +87,7 @@ body {
 }
 
 #logcontainer {
-  width: 50%;
+  width: 55%;
   flex: auto;
   display: flex;
   flex-direction: column;
@@ -101,7 +101,8 @@ body {
 #roundlog {
   flex: auto;
   min-height: 100px;
-  border: 2px solid darkgray;
+  background-color: white;
+  padding: 10px;
 }
 
 #scorebox {
@@ -187,7 +188,7 @@ body {
   flex-direction: row;
 }
 
-#optionrounds {
+#roundstowin {
   height: 80px;
   width: 130px;
   font-weight: 700;
@@ -241,16 +242,6 @@ body {
 
 .roundsctrl:active {
   background-color: white;
-}
-
-p.stat {
-  padding: 5px 8px;
-  margin: 0 0 0 20px;
-}
-
-span.label {
-  font-weight: 900;
-  font-size: 1.2em;
 }
 
 .choice {
