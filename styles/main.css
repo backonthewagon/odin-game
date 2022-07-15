@@ -88,6 +88,7 @@ body {
 
 #logcontainer {
   width: 55%;
+  max-width: 800px;
   flex: auto;
   display: flex;
   flex-direction: column;
