@@ -50,15 +50,15 @@ function chooseAction() {
 
     if(result === `win`) {
       divRoundsWon.innerText = `${++roundsWon}`;
-      roundLog += `which beat computer's <strong>${compChoice}</strong>!<br />`;
+      roundLog += `which beat computer's <strong>${compChoice}</strong>!<br>`;
     } else if(result === `lose`) {
       divRoundsLost.innerText = `${++roundsLost}`;
-      roundLog += `which was beaten by computer's <strong>${compChoice}</strong>.<br />`;
+      roundLog += `which was beaten by computer's <strong>${compChoice}</strong>.<br>`;
     } else if(result === `tie`) {
       roundsTied++;
-      roundLog += `resulting in a tie with computer!<br />`;
+      roundLog += `resulting in a tie with computer!<br>`;
     } else {
-      roundLog += `Something went wrong...<br />`;
+      roundLog += `Something went wrong...<br>`;
     }
 
     // done incrementing round tallies so
