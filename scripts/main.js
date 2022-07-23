@@ -34,7 +34,8 @@ function checkGameEnd() {
   return (roundsWon >= roundsToWin) ? `win` : `lose`;
 }
 
-const chooseAction = function() {
+//const chooseAction = function() {
+function chooseAction() {
   let roundLog = ``;
   let gameStatus = ``;
 
