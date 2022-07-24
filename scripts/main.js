@@ -139,11 +139,11 @@ const buttonReset = document.getElementById(`reset`);
 const buttonIncrementRounds = document.getElementById(`incrementrounds`);
 const buttonDecrementRounds = document.getElementById(`decrementrounds`);
 
-buttonRock.onclick = chooseAction;
-buttonPaper.onclick = chooseAction;
-buttonScissors.onclick = chooseAction;
+buttonRock.addEventListener('click', chooseAction);
+buttonPaper.addEventListener('click', chooseAction);
+buttonScissors.addEventListener('click', chooseAction);
 
-buttonReset.onclick = resetGame;
+buttonReset.addEventListener('click', resetGame);
 
-buttonIncrementRounds.onclick = incrementRoundsToWin;
-buttonDecrementRounds.onclick = decrementRoundsToWin;
+buttonIncrementRounds.addEventListener('click', incrementRoundsToWin);
+buttonDecrementRounds.addEventListener('click', decrementRoundsToWin);
